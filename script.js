@@ -152,7 +152,8 @@ document.getElementById('projectForm').addEventListener('submit', async function
         formData.append('timestamp', new Date().toLocaleString());
 
         // Append files
-        const files = fileInput.files;
+        // Append files
+        const files = document.getElementById('referenceFiles').files;
         for (let i = 0; i < files.length; i++) {
             formData.append('referenceFiles', files[i]);
         }
@@ -265,7 +266,77 @@ function nextStep(currentStep) {
     document.getElementById('project-form').scrollIntoView({ behavior: 'smooth' });
 }
 
-// ... (rest of helper functions)
+// ============================================
+// FILE UPLOAD INTERACTION
+// ============================================
+
+const fileUploadArea = document.getElementById('fileUploadArea');
+const fileInput = document.getElementById('referenceFiles');
+
+fileUploadArea.addEventListener('click', function() {
+    fileInput.click();
+});
+
+fileInput.addEventListener('change', function(e) {
+    const files = this.files;
+    
+    if (files.length > 0) {
+        fileUploadArea.querySelector('.file-upload-text').textContent = `${files.length} file(s) selected`;
+        fileUploadArea.style.borderColor = 'var(--success)';
+        fileUploadArea.style.background = 'var(--success-bg)';
+    } else {
+        fileUploadArea.querySelector('.file-upload-text').textContent = 'Upload files';
+        fileUploadArea.style.borderColor = '';
+        fileUploadArea.style.background = '';
+    }
+});
+
+// Drag and drop functionality
+fileUploadArea.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    this.classList.add('drag-over');
+});
+
+fileUploadArea.addEventListener('dragleave', function() {
+    this.classList.remove('drag-over');
+});
+
+fileUploadArea.addEventListener('drop', function(e) {
+    e.preventDefault();
+    this.classList.remove('drag-over');
+    
+    const files = e.dataTransfer.files;
+    fileInput.files = files;
+    
+    if (files.length > 0) {
+        fileUploadArea.querySelector('.file-upload-text').textContent = `${files.length} file(s) selected`;
+        fileUploadArea.style.borderColor = 'var(--success)';
+        fileUploadArea.style.background = 'var(--success-bg)';
+    }
+});
+
+// ============================================
+// SMOOTH SCROLL FOR ANCHOR LINKS
+// ============================================
+
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// ============================================
+// FOOTER CURRENT YEAR
+// ============================================
+
+document.getElementById('currentYear').textContent = new Date().getFullYear();
 
 // Email validation
 document.getElementById('email').addEventListener('blur', function() {
