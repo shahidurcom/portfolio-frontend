@@ -119,10 +119,9 @@ function prevStep(currentStep) {
 
 // Determine API URL based on environment
 // const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-//     ? 'http://localhost:3000/api/send-project-request' // Local Development (assuming backend on 3000)
-//     : '/api/send-project-request'; // Production (Vercel)
-
-const API_URL = 'https://portfolio-backend-ten-phi.vercel.app/api/send-project-request'; // Production (Vercel)
+//     ? 'http://localhost:3000/api/send-project-request' // Local Development
+//     : 'https://portfolio-backend-ten-phi.vercel.app/api/send-project-request'; // Production Backend
+const API_URL = 'https://portfolio-backend-ten-phi.vercel.app/api/send-project-request';
 
 document.getElementById('projectForm').addEventListener('submit', async function(e) {
     e.preventDefault();
