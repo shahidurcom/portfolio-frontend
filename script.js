@@ -122,7 +122,7 @@ function prevStep(currentStep) {
 //     ? 'http://localhost:3000/api/send-project-request' // Local Development (assuming backend on 3000)
 //     : '/api/send-project-request'; // Production (Vercel)
 
-const API_URL = 'https://portfolio-pied-five-rzzmx344wh.vercel.app/api/send-project-request'; // Production (Vercel)
+const API_URL = 'https://portfolio-backend-ten-phi.vercel.app/api/send-project-request'; // Production (Vercel)
 
 document.getElementById('projectForm').addEventListener('submit', async function(e) {
     e.preventDefault();
