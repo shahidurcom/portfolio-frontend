@@ -273,8 +273,10 @@ function nextStep(currentStep) {
 const fileUploadArea = document.getElementById('fileUploadArea');
 const fileInput = document.getElementById('referenceFiles');
 
-fileUploadArea.addEventListener('click', function() {
-    fileInput.click();
+fileUploadArea.addEventListener('click', function(e) {
+    if (e.target !== fileInput) {
+        fileInput.click();
+    }
 });
 
 fileInput.addEventListener('change', function(e) {
@@ -357,5 +359,9 @@ document.getElementById('phone').addEventListener('blur', function() {
         }
     }
 });
+
+function resetForm() {
+    window.location.reload();
+}
 
 console.log('%c Portfolio Loaded Successfully! ', 'background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); color: white; font-size: 16px; padding: 10px; border-radius: 5px;');
