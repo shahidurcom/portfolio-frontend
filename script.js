@@ -236,20 +236,61 @@ function hideError() {
 function nextStep(currentStep) {
     // Validate current step before proceeding
     const currentForm = document.getElementById(`step${currentStep}`);
+    
+    // Select all required inputs
     const inputs = currentForm.querySelectorAll('input[required], select[required], textarea[required]');
     let isValid = true;
+    let firstInvalidInput = null;
 
     inputs.forEach(input => {
-        if (!input.value.trim()) {
-            isValid = false;
-            input.style.borderColor = 'var(--error)';
+        let isInputValid = true;
+
+        if (input.type === 'radio') {
+            // For radio buttons, check if any button in the group is checked
+            const groupName = input.name;
+            const group = currentForm.querySelectorAll(`input[name="${groupName}"]`);
+            // Check if at least one is checked
+            const isChecked = Array.from(group).some(radio => radio.checked);
+            if (!isChecked) {
+                isInputValid = false;
+            }
         } else {
-            input.style.borderColor = '';
+            // For text, select, textarea
+            if (!input.value.trim()) {
+                isInputValid = false;
+            }
+        }
+
+        if (!isInputValid) {
+            isValid = false;
+            if (!firstInvalidInput) firstInvalidInput = input;
+            
+            // Visual feedback
+            if (input.type === 'radio') {
+                // Highlight the container or parent for radios if necessary
+                // In this specific form, we can find the closest form-group
+                const formGroup = input.closest('.form-group');
+                if (formGroup) formGroup.style.border = '1px solid var(--error)';
+            } else {
+                input.style.borderColor = 'var(--error)';
+            }
+        } else {
+            // Clear error styles
+            if (input.type === 'radio') {
+                const formGroup = input.closest('.form-group');
+                if (formGroup) formGroup.style.border = '';
+            } else {
+                input.style.borderColor = '';
+            }
         }
     });
 
     if (!isValid) {
         showToast('Please fill in all required fields.', 'error');
+        if (firstInvalidInput) {
+            // Focus isn't great for radios, but good for others
+            if (firstInvalidInput.type !== 'radio') firstInvalidInput.focus();
+        }
         return;
     }
 
@@ -261,6 +302,23 @@ function nextStep(currentStep) {
     progressSteps[currentStep - 1].classList.remove('active');
     progressSteps[currentStep - 1].classList.add('completed');
     progressSteps[currentStep].classList.add('active');
+
+    // Scroll to top of form
+    document.getElementById('project-form').scrollIntoView({ behavior: 'smooth' });
+}
+
+function prevStep(currentStep) {
+    document.getElementById(`step${currentStep}`).style.display = 'none';
+    const prevStepIndex = currentStep - 1;
+    document.getElementById(`step${prevStepIndex}`).style.display = 'block';
+    
+    // Update progress steps
+    const progressSteps = document.querySelectorAll('.progress-step');
+    // Current step (which is index currentStep - 1) is no longer active
+    progressSteps[currentStep - 1].classList.remove('active');
+    // Previous step (index currentStep - 2) becomes active again
+    progressSteps[prevStepIndex - 1].classList.remove('completed'); // Optional: remove completed if going back?
+    progressSteps[prevStepIndex - 1].classList.add('active');
 
     // Scroll to top of form
     document.getElementById('project-form').scrollIntoView({ behavior: 'smooth' });
